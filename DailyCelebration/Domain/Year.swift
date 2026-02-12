@@ -22,29 +22,24 @@ struct Year: Decodable, CustomStringConvertible, Identifiable {
     let nov: [Day]
     let dec: [Day]
 
-    var year: Int {
-        Calendar.current
-            .component(.year, from: jan.first!.date)
+       var description: String {
+        return "\(id)"
     }
 
-    var description: String {
-        return "\(year)"
-    }
-
-    func getMonths() -> [String: [Day]] {
+    func getMonths() -> [[String: [Day]]] {
         return [
-            "Janeiro": jan,
-            "Fevereiro": feb,
-            "Maio": may,
-            "Abril": apr,
-            "Março": mar,
-            "Junho": jun,
-            "Julho": jul,
-            "Agosto": aug,
-            "Setembro": sep,
-            "Outubro": oct,
-            "Novembro": nov,
-            "Dezembro": dec,
+            ["Janeiro": jan],
+            ["Fevereiro": feb],
+            ["Maio": may],
+            ["Abril": apr],
+            ["Março": mar],
+            ["Junho": jun],
+            ["Julho": jul],
+            ["Agosto": aug],
+            ["Setembro": sep],
+            ["Outubro": oct],
+            ["Novembro": nov],
+            ["Dezembro": dec],
         ]
     }
 }

@@ -10,42 +10,24 @@ import SwiftUI
 
 struct HomeView: View {
     let vm = HomeViewModel()
-    
-    @State private var stackPath: [Day] = []
 
-    let daysMock: [Day] = [
-        Day(date: Date.now, events: ["Dia tal", "Dia tal"]),
-        Day(
-            date: Date.now.advanced(by: 1),
-            events: ["Dia tal", "Dia tal"]
-        ),
-        Day(date: Date.now.advanced(by: 2), events: ["Dia tal", "Dia tal"]),
-    ]
+    @State private var stackPath: [Day] = []
+    @State private var searchText: String = ""
 
     var body: some View {
         NavigationStack(path: $stackPath) {
             List {
-                
-                Section {
-                    ForEach(daysMock, id: \.self.date) { day in
-                        DayListTile(day: day).onTapGesture {
-                            stackPath.append(day)
-                        }
-                    }
-                } header : {
-                    Text("Test")
-                }
-                
-                ForEach(vm.years, id: \.year) { year in
+                ForEach(vm.years) { year in
                     Section {
                         // Compute months and names with explicit types to help type-checker
-                        let months: [String: [Day]] = year.getMonths()
-                        let monthNames: [String] = months.keys.sorted()
+                        let months: [[String: [Day]]] = year.getMonths()
 
-                        ForEach(monthNames, id: \.self) { monthName in
+                        ForEach(months, id: \.self.keys.first) { month in
+                            let monthName = month.keys.first
+
                             Section {
                                 // Safely unwrap days for this month and iterate with a stable id
-                                if let days = months[monthName] {
+                                if let days = month.values.first {
                                     ForEach(days, id: \.self) { day in
                                         DayListTile(day: day)
                                             .onTapGesture {
@@ -54,7 +36,7 @@ struct HomeView: View {
                                     }
                                 }
                             } header: {
-                                Text(monthName)
+                                Text(monthName ?? "")
                             }
                         }
                     } header: {
@@ -64,9 +46,9 @@ struct HomeView: View {
             }
             .navigationDestination(for: Day.self) { day in
                 DayDetailsView(day: day)
-            }
+            }.navigationBarTitle(Text("Calendar"))
+            .searchable(text: $searchText)
         }
-        .navigationBarTitle(Text("Calendar"))
     }
 }
 

@@ -1,5 +1,5 @@
 {
-    "id": 2026
+    "id": 2026,
     "jan": [
       {
         "date": "2026-01-01",
@@ -353,7 +353,7 @@
       {
         "date": "2026-07-01",
         "events": [
-          "Início do Julho Amarelo | Hepatites Virais (1 a 31)"
+          "Início do Julho Amarelo"
         ]
       },
       {
@@ -373,7 +373,7 @@
       {
         "date": "2026-08-01",
         "events": [
-          "Início do Agosto Dourado | Aleitamento Materno (1 a 31)"
+          "Início do Agosto Dourado"
         ]
       },
       {
@@ -400,7 +400,7 @@
       {
         "date": "2026-09-01",
         "events": [
-          "Início do Setembro Amarelo | Prevenção do Suicídio (1 a 30)"
+          "Início do Setembro Amarelo"
         ]
       },
       {
@@ -426,7 +426,7 @@
       {
         "date": "2026-10-01",
         "events": [
-          "Início do Outubro Rosa | Câncer de Mama (1 a 31)"
+          "Início do Outubro Rosa"
         ]
       },
       {
@@ -453,7 +453,7 @@
       {
         "date": "2026-11-01",
         "events": [
-          "Início do Novembro Azul | Saúde do Homem (1 a 30)"
+          "Início do Novembro Azul"
         ]
       },
       {

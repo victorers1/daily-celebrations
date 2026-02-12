@@ -10,23 +10,19 @@ import SwiftUI
 
 struct DayListTile: View {
     let day: Day
-    var body: some View {
-        HStack {
-            VStack(alignment: .leading) {
-                Text(
-                    day.date
-                        .formatted(
-                            Date
-                                .FormatStyle()
-                                .year()
-                                .month()
-                                .day(.twoDigits)
-                        )
-                ).font(Font.title3.bold())
+    
+    /// Separate year, month and day infos in 3 Strings
 
-                ForEach(day.events, id: \.self) { event in
-                    Text("- \(event)")
-                }
+    var body: some View {
+        VStack(alignment: .leading) {
+            Text(day.date, format: Date.FormatStyle()
+                .day(.defaultDigits)
+                .month(.wide)
+                .year(.defaultDigits)
+            ).font(.title3.bold())
+
+            ForEach(day.events, id: \.self) { event in
+                Text("- \(event)")
             }
         }.padding(16)
     }
@@ -34,6 +30,14 @@ struct DayListTile: View {
 
 #Preview {
     DayListTile(
-        day: Day(date: Date(), events: ["Dia da paz universal"])
+        day: Day(
+            date: Calendar.current
+                .date(from: DateComponents(year: 2026, month: 1, day: 1))!,
+            events: [
+                "Dia da paz universal",
+                "Dia da paz universal",
+                "Dia da paz universal",
+            ]
+        )
     )
 }

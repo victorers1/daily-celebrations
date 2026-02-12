@@ -8,14 +8,18 @@
 import SwiftUI
 
 struct DayDetailsView: View {
-    let day: Day;
-    
+    let day: Day
+
     init(day: Day) {
         self.day = day
     }
-    
+
     var body: some View {
-        Text(day.date.formatted()).frame(alignment: .center)
+        VStack {
+            Text("IA Generated img")
+            Text("IA Generated text")
+        }.navigationTitle(day.date.formatted())
+            .navigationSubtitle("Details")
     }
 }
 
