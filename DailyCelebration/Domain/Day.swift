@@ -27,11 +27,11 @@ struct Day: Hashable, Decodable {
         // Decode date as string
         let dateString = try container.decode(String.self, forKey: .date)
         
-        let dateFormatter = DateFormatter()
-        dateFormatter.locale = Locale(identifier: "en_US_POSIX")
-        dateFormatter.timeZone = TimeZone(secondsFromGMT: 0)
-        dateFormatter.dateFormat = "yyyy-MM-dd"
-        let parsedDate = dateFormatter.date(from: dateString)
+        let formatter = ISO8601DateFormatter()
+        formatter.formatOptions = [.withFullDate]
+        formatter.timeZone = TimeZone(secondsFromGMT: 0)
+        
+        let parsedDate: Date? = formatter.date(from: dateString)
         
         guard let finalDate = parsedDate else {
             throw DecodingError.dataCorrupted(

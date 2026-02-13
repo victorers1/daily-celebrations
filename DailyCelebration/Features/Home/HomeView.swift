@@ -48,6 +48,21 @@ struct HomeView: View {
                 DayDetailsView(day: day)
             }.navigationBarTitle(Text("Calendar"))
             .searchable(text: $searchText)
+            .toolbar(id: "MOVETODAY") {
+                ToolbarItem(id: "MOVE", placement: .bottomBar) {
+                    Button {
+                        
+                    } label: {
+                        Image(systemName: "square.and.arrow.down.badge.clock")
+                    }
+                }
+            }
+            .toolbar {
+                DefaultToolbarItem(kind: .search, placement: .bottomBar)
+                
+                ToolbarSpacer(.fixed, placement: .bottomBar)
+            }
+            
         }
     }
 }

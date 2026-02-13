@@ -10,16 +10,12 @@ import SwiftUI
 
 struct DayListTile: View {
     let day: Day
-    
+
     /// Separate year, month and day infos in 3 Strings
 
     var body: some View {
         VStack(alignment: .leading) {
-            Text(day.date, format: Date.FormatStyle()
-                .day(.defaultDigits)
-                .month(.wide)
-                .year(.defaultDigits)
-            ).font(.title3.bold())
+            Text(day.date.ddMMMyyyy).font(.title3.bold())
 
             ForEach(day.events, id: \.self) { event in
                 Text("- \(event)")
