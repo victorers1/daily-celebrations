@@ -21,10 +21,14 @@ extension Date {
     }
 
     var ddMMMyyyy: String {
-        return Date.FormatStyle()
-            .day(.defaultDigits)
-            .month(.abbreviated)
-            .year(.defaultDigits)
-            .format(self)
+        let dateFormatter = DateFormatter()
+
+        dateFormatter.calendar = Calendar(identifier: .gregorian)
+        dateFormatter.locale = Locale.current
+        dateFormatter.timeZone = TimeZone(secondsFromGMT: 0)
+        dateFormatter.dateStyle = .medium
+        dateFormatter.timeStyle = .none
+
+        return dateFormatter.string(from: self)
     }
 }

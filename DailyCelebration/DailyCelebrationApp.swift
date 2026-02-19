@@ -6,6 +6,8 @@
 //
 
 import SwiftUI
+import FoundationModels
+import Playgrounds
 
 @main
 struct DailyCelebrationApp: App {
@@ -16,3 +18,4 @@ struct DailyCelebrationApp: App {
         }
     }
 }
+

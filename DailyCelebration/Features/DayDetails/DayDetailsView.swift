@@ -8,7 +8,8 @@
 import SwiftUI
 
 struct DayDetailsView: View {
-    let day: Day
+    @State private var day: Day
+    @State private var planner: CelebrationPlanner?
 
     init(day: Day) {
         self.day = day
@@ -16,8 +17,17 @@ struct DayDetailsView: View {
 
     var body: some View {
         VStack {
-            Text("IA Generated img")
-            Text("IA Generated text")
+            Text(
+                "IA Generated text IA Generated text IA Generated text IA Generated text IA Generated text IA Generated text IA Generated text IA Generated text IA Generated text IA Generated text "
+            )
+            
+            if let today = planner?.dayActivities {
+                Text(today.description
+                ).padding(.bottom, 32)
+            } else {
+                Text("Loading itinerary")
+            }
+            
         }.navigationTitle(day.date.ddMMMyyyy)
             .navigationSubtitle("Details")
             .toolbar(id: "MOVETODAY") {
@@ -45,7 +55,18 @@ struct DayDetailsView: View {
 
                 ToolbarSpacer(.fixed, placement: .bottomBar)
             }
-            
+            .padding(16)
+            .task {
+                planner = CelebrationPlanner(day: day)
+                print("Created planner on day \(day)")
+                
+                do {
+                    try await planner?.suggestItinerary()
+                } catch {
+                    // TODO: Surface error to the UI
+                    print("Failed to suggest itinerary: \(error)")
+                }
+            }
     }
 }
 
