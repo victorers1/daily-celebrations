@@ -19,7 +19,8 @@ extension Date {
     var day: Int {
         return Calendar.current.component(.day, from: self)
     }
-
+    
+    /// Returns a Date without Time and Timezone information.
     var ddMMMyyyy: String {
         let dateFormatter = DateFormatter()
 

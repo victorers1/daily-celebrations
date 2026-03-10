@@ -12,13 +12,20 @@ import Observation
 @Observable
 @MainActor
 final class CelebrationPlanner {
-    private(set) var dayActivities: DayActivities?
+    private(set) var currentDayActivities: DayActivities.PartiallyGenerated?
+    private(set) var currentDay: Day
     private let session: LanguageModelSession
-
-    let day: Day
-
+    
+    // TODO: cache opened days in the global state
+    private let openedDays: [Day: DayActivities.PartiallyGenerated] = [:]
+    
+    var isPlanning: Bool {
+        session.isResponding
+    }
+    
+    
     init(day: Day) {
-        self.day = day
+        self.currentDay = day
                 
         session = LanguageModelSession {
             // Instructions
@@ -30,14 +37,18 @@ final class CelebrationPlanner {
     }
 
     func suggestItinerary() async throws {
-        let response = try await session.respond(generating: DayActivities.self) {
+        let streamResponse = session.streamResponse(
+            generating: DayActivities.self
+        ) {
             // Prompt
-            "Today is the day of \(day.events.joined(separator: ", ")). Generate a 3 paragraph text talking about today's celebration. Also, generate some activities so the user can celebrate at least on the these events. Events names will be in the user's language."
+            "Today is celebrated: \(currentDay.events.joined(separator: ", ")). Generate 3 to 4 paragraphs of text talking about today's celebration. Also, generate some activities so the user can celebrate at least on the these events. Events names will be in the user's language."
         }
         
-        self.dayActivities = response.content
+        for try await partialResponse in streamResponse {
+            currentDayActivities = partialResponse.content
+        }
         
-        print("Planner suggested itinerary: \(dayActivities, default: "")")
+        print("Planner suggested itinerary: \(currentDayActivities, default: "")")
     }
     
     /// Forces the response to be in the user's language

@@ -9,64 +9,108 @@ import SwiftUI
 
 struct DayDetailsView: View {
     @State private var day: Day
-    @State private var planner: CelebrationPlanner?
+    @State private var celebrationPlanner: CelebrationPlanner?
 
     init(day: Day) {
         self.day = day
     }
 
     var body: some View {
+        ScrollView {
+            if let planner = self.celebrationPlanner {
+                VStack {
+                    Text("IA Generated Image")
+                        .frame(maxWidth: .infinity, minHeight: 200, alignment: .center)
+                        .background(Color(.blue))
+                        .padding(.bottom, 36)
+
+                    if planner.isPlanning {
+                        Image(systemName: "sparkles")
+                            .pulseOpacityEffect()
+                            .font(.largeTitle)
+                            .frame(maxWidth: .infinity, alignment: .leading)
+                    }
+
+                    if let dayActivities = planner.currentDayActivities {
+                        getDayActivitiesView(dayActivities: dayActivities)
+
+                    } else {
+                        Text("Loading description")
+                    }
+
+                }.navigationTitle(day.date.ddMMMyyyy)
+                    .navigationSubtitle("Details")
+                    .toolbar(id: "MOVETODAY") {
+                        ToolbarItem(id: "MOVE", placement: .bottomBar) {
+                            Button {
+                                print("square.and.arrow.down.badge.clock pressed")
+                            } label: {
+                                Image(systemName: "square.and.arrow.down.badge.clock")
+                            }
+                        }
+                    }
+                    .toolbar {
+                        ToolbarItemGroup(placement: .bottomBar) {
+                            ToolbarButton(systemName: "chevron.left") {
+                                print("chevron.left pressed")
+                            }
+
+                            ToolbarButton(systemName: "arrow.clockwise") {
+                                Task {
+                                    do {
+                                        print("arrow.clockwise pressed")
+                                        try await planner.suggestItinerary()
+                                    } catch {
+                                        // TODO: Surface error to the UI
+                                        print("Failed to suggest itinerary: \(error)")
+                                    }
+                                }
+                            }
+
+                            ToolbarButton(systemName: "square.and.arrow.up") {
+                                print("square.and.arrow.up pressed")
+                            }
+
+                            ToolbarButton(systemName: "chevron.right") {
+                                print("chevron.right pressed")
+                            }
+                        }
+
+                        ToolbarSpacer(.fixed, placement: .bottomBar)
+                    }
+                    .padding(16)
+            }
+
+        }.task {
+            guard celebrationPlanner == nil else { return }
+
+            celebrationPlanner = CelebrationPlanner(day: day)
+            print("Created planner on day \(day)")
+
+            do {
+                try await celebrationPlanner?.suggestItinerary()
+            } catch {
+                // TODO: Surface error to the UI
+                print("Failed to suggest itinerary: \(error)")
+            }
+        }
+    }
+
+    func getDayActivitiesView(dayActivities: DayActivities.PartiallyGenerated) -> some View {
         VStack {
-            Text(
-                "IA Generated text IA Generated text IA Generated text IA Generated text IA Generated text IA Generated text IA Generated text IA Generated text IA Generated text IA Generated text "
-            )
-            
-            if let today = planner?.dayActivities {
-                Text(today.description
-                ).padding(.bottom, 32)
-            } else {
-                Text("Loading itinerary")
-            }
-            
-        }.navigationTitle(day.date.ddMMMyyyy)
-            .navigationSubtitle("Details")
-            .toolbar(id: "MOVETODAY") {
-                ToolbarItem(id: "MOVE", placement: .bottomBar) {
-                    Button {
-                    } label: {
-                        Image(systemName: "square.and.arrow.down.badge.clock")
-                    }
+            Text(dayActivities.description ?? "")
+                .padding(.bottom, 32)
+                .frame(maxWidth: .infinity, alignment: .leading)
+
+            if let activities = dayActivities.activities {
+                ForEach(activities) { activity in
+                    DayActivityListTile(
+                        iconName: activity.type?.description, title: activity.title, description: activity.description
+                    ).padding(.bottom, 16)
                 }
             }
-            .toolbar {
-                ToolbarItemGroup(placement: .bottomBar) {
-                    ToolbarButton(systemName: "chevron.left") {
-                    }
-
-                    ToolbarButton(systemName: "arrow.clockwise") {
-                    }
-
-                    ToolbarButton(systemName: "square.and.arrow.up") {
-                    }
-
-                    ToolbarButton(systemName: "chevron.right") {
-                    }
-                }
-
-                ToolbarSpacer(.fixed, placement: .bottomBar)
-            }
-            .padding(16)
-            .task {
-                planner = CelebrationPlanner(day: day)
-                print("Created planner on day \(day)")
-                
-                do {
-                    try await planner?.suggestItinerary()
-                } catch {
-                    // TODO: Surface error to the UI
-                    print("Failed to suggest itinerary: \(error)")
-                }
-            }
+        }.transition(.blurReplace)
+            .animation(.easeInOut, value: dayActivities)
     }
 }
 
@@ -83,6 +127,6 @@ struct ToolbarButton: View {
 
 #Preview {
     DayDetailsView(
-        day: Day(date: Date.now, events: ["Event 1", "Event 2"])
+        day: Day(date: Date.now, events: ["Dia do sanitarista", "Dia mundial do introvertido"]),
     )
 }

@@ -20,6 +20,7 @@ struct DayActivities: Equatable {
 
 @Generable
 struct Activity : Equatable {
+
     let type: ActivityKind
     
     @Guide(description: "A fun title for the activity")
@@ -35,4 +36,15 @@ enum ActivityKind {
     case foodAndDining
     case shopping
     case hotelAndLodging
+}
+
+extension ActivityKind: CustomStringConvertible {
+    var description: String {
+        switch self {
+            case .sightseeing: return "binoculars.circle"
+            case .foodAndDining: return "fork.knife.circle"
+            case .shopping: return "bag.circle"
+            case .hotelAndLodging: return "house.lodge.circle"
+        }
+    }
 }

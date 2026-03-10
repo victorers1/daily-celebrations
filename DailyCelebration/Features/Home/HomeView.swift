@@ -16,6 +16,7 @@ struct HomeView: View {
 
     var body: some View {
         NavigationStack(path: $stackPath) {
+            
             List {
                 ForEach(vm.years) { year in
                     Section {
@@ -61,7 +62,7 @@ struct HomeView: View {
                 DefaultToolbarItem(kind: .search, placement: .bottomBar)
                 
                 ToolbarSpacer(.fixed, placement: .bottomBar)
-            }
+            }.tabBarMinimizeBehavior(.onScrollDown)
             
         }
     }

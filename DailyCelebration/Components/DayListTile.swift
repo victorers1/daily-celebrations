@@ -11,8 +11,6 @@ import SwiftUI
 struct DayListTile: View {
     let day: Day
 
-    /// Separate year, month and day infos in 3 Strings
-
     var body: some View {
         VStack(alignment: .leading) {
             Text(day.date.ddMMMyyyy).font(.title3.bold())
