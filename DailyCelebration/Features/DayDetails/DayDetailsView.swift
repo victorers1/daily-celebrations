@@ -25,30 +25,33 @@ struct DayDetailsView: View {
                         .padding(.bottom, 36)
 
                     if planner.isPlanning {
-                        Image(systemName: "sparkles")
-                            .pulseOpacityEffect()
-                            .font(.largeTitle)
-                            .frame(maxWidth: .infinity, alignment: .leading)
+                        HStack() {
+                            Image(systemName: "sparkles")
+                                .pulseOpacityEffect()
+                                .font(.largeTitle)
+                                
+                            Text("Generating description...")
+                                .frame(maxWidth: .infinity, alignment: .leading)
+                        }.transition(.opacity)
                     }
 
                     if let dayActivities = planner.currentDayActivities {
                         getDayActivitiesView(dayActivities: dayActivities)
-
-                    } else {
-                        Text("Loading description")
                     }
 
-                }.navigationTitle(day.date.ddMMMyyyy)
+                }
+                .animation(.easeInOut(duration: 0.5), value: planner.isPlanning)
+                .navigationTitle(day.date.ddMMMyyyy)
                     .navigationSubtitle("Details")
-                    .toolbar(id: "MOVETODAY") {
-                        ToolbarItem(id: "MOVE", placement: .bottomBar) {
-                            Button {
-                                print("square.and.arrow.down.badge.clock pressed")
-                            } label: {
-                                Image(systemName: "square.and.arrow.down.badge.clock")
-                            }
-                        }
-                    }
+//                    .toolbar(id: "MOVETODAY") {
+//                        ToolbarItem(id: "MOVE", placement: .bottomBar) {
+//                            Button {
+//                                print("square.and.arrow.down.badge.clock pressed")
+//                            } label: {
+//                                Image(systemName: "square.and.arrow.down.badge.clock")
+//                            }
+//                        }
+//                    }
                     .toolbar {
                         ToolbarItemGroup(placement: .bottomBar) {
                             ToolbarButton(systemName: "chevron.left") {

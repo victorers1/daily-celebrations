@@ -16,7 +16,6 @@ struct HomeView: View {
 
     var body: some View {
         NavigationStack(path: $stackPath) {
-            
             List {
                 ForEach(vm.years) { year in
                     Section {
@@ -52,7 +51,6 @@ struct HomeView: View {
             .toolbar(id: "MOVETODAY") {
                 ToolbarItem(id: "MOVE", placement: .bottomBar) {
                     Button {
-                        
                     } label: {
                         Image(systemName: "square.and.arrow.down.badge.clock")
                     }
@@ -60,10 +58,10 @@ struct HomeView: View {
             }
             .toolbar {
                 DefaultToolbarItem(kind: .search, placement: .bottomBar)
-                
+
                 ToolbarSpacer(.fixed, placement: .bottomBar)
-            }.tabBarMinimizeBehavior(.onScrollDown)
-            
+            }
+            .tabBarMinimizeBehavior(.onScrollDown)
         }
     }
 }
