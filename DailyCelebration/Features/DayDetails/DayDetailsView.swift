@@ -43,15 +43,6 @@ struct DayDetailsView: View {
                 .animation(.easeInOut(duration: 0.5), value: planner.isPlanning)
                 .navigationTitle(day.date.ddMMMyyyy)
                     .navigationSubtitle("Details")
-//                    .toolbar(id: "MOVETODAY") {
-//                        ToolbarItem(id: "MOVE", placement: .bottomBar) {
-//                            Button {
-//                                print("square.and.arrow.down.badge.clock pressed")
-//                            } label: {
-//                                Image(systemName: "square.and.arrow.down.badge.clock")
-//                            }
-//                        }
-//                    }
                     .toolbar {
                         ToolbarItemGroup(placement: .bottomBar) {
                             ToolbarButton(systemName: "chevron.left") {
@@ -80,6 +71,14 @@ struct DayDetailsView: View {
                         }
 
                         ToolbarSpacer(.fixed, placement: .bottomBar)
+                        
+                        ToolbarItem(placement: .bottomBar) {
+                            Button {
+                                print("square.and.arrow.down.badge.clock pressed")
+                            } label: {
+                                Image(systemName: "square.and.arrow.down.badge.clock")
+                            }
+                        }
                     }
                     .padding(16)
             }

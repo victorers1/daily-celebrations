@@ -5,26 +5,29 @@
 //  Created by Victor Emanuel Ribeiro Silva on 10/02/26.
 //
 
+import Combine
 import Foundation
 
-class HomeViewModel {
-    var years: [Year] = []
+@MainActor // prevents the calling of DispatchQueue.main.async {}
+class HomeViewModel: ObservableObject {
+    init() {}
 
-    init() {
-        decodeYears()
-    }
+    @Published var year: Year = Year.empty()
+    @Published var isLoading: Bool = true
 
-    func decodeYears() {
+    func decodeYear() {
+        isLoading = true
+
         if let url = Bundle.main.url(forResource: "2026", withExtension: "json") {
             do {
                 let data = try Data(contentsOf: url)
 
                 let decoder = JSONDecoder()
                 decoder.keyDecodingStrategy = .convertFromSnakeCase
-                let year = try decoder.decode(Year.self, from: data)
-                years.append(year)
+                year = try decoder
+                    .decode(Year.self, from: data)
 
-                print("years: \(years)")
+                print("current year: \(String(describing: year))")
 
             } catch {
                 print("Error decoding JSON data: \(error)")
@@ -32,5 +35,7 @@ class HomeViewModel {
         } else {
             print("URL not found")
         }
+
+        isLoading = false
     }
 }

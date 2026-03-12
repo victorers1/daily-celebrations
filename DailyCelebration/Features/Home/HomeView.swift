@@ -9,18 +9,20 @@ import Foundation
 import SwiftUI
 
 struct HomeView: View {
-    let vm = HomeViewModel()
+    @StateObject private var vm = HomeViewModel()
 
     @State private var stackPath: [Day] = []
     @State private var searchText: String = ""
 
     var body: some View {
         NavigationStack(path: $stackPath) {
-            List {
-                ForEach(vm.years) { year in
+            if vm.isLoading {
+                Text("Loading...")
+            } else {
+                List {
                     Section {
                         // Compute months and names with explicit types to help type-checker
-                        let months: [[String: [Day]]] = year.getMonths()
+                        let months: [[String: [Day]]] = vm.year.getMonths()
 
                         ForEach(months, id: \.self.keys.first) { month in
                             let monthName = month.keys.first
@@ -39,29 +41,29 @@ struct HomeView: View {
                                 Text(monthName ?? "")
                             }
                         }
-                    } header: {
-                        Text(verbatim: String(describing: year))
                     }
                 }
-            }
-            .navigationDestination(for: Day.self) { day in
-                DayDetailsView(day: day)
-            }.navigationBarTitle(Text("Calendar"))
-            .searchable(text: $searchText)
-            .toolbar(id: "MOVETODAY") {
-                ToolbarItem(id: "MOVE", placement: .bottomBar) {
-                    Button {
-                    } label: {
-                        Image(systemName: "square.and.arrow.down.badge.clock")
-                    }
-                }
-            }
-            .toolbar {
-                DefaultToolbarItem(kind: .search, placement: .bottomBar)
+                .navigationDestination(for: Day.self) { day in
+                    DayDetailsView(day: day)
+                }.navigationBarTitle(Text(verbatim: String(describing: vm.year)))
+                .searchable(text: $searchText)
+                .toolbar {
+                    DefaultToolbarItem(kind: .search, placement: .bottomBar)
 
-                ToolbarSpacer(.fixed, placement: .bottomBar)
+                    ToolbarSpacer(.fixed, placement: .bottomBar)
+
+                    ToolbarItem(placement: .bottomBar) {
+                        Button {
+                        } label: {
+                            Image(systemName: "square.and.arrow.down.badge.clock")
+                        }
+                    }
+                }
+                .tabBarMinimizeBehavior(.onScrollDown)
             }
-            .tabBarMinimizeBehavior(.onScrollDown)
+
+        }.task {
+            vm.decodeYear()
         }
     }
 }
