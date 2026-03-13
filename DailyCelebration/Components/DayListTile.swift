@@ -13,7 +13,7 @@ struct DayListTile: View {
 
     var body: some View {
         VStack(alignment: .leading) {
-            Text(day.date.ddMMMyyyy).font(.title3.bold())
+            Text(day.date.ddMMM).font(.title3.bold())
 
             ForEach(day.events, id: \.self) { event in
                 Text("- \(event)")

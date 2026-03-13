@@ -10,5 +10,11 @@ import Foundation
 
 @MainActor
 class DayDetailsViewModel: ObservableObject {
-    init () {}
+    
+    @Published private var day: Day
+    @Published private var celebrationPlanner: CelebrationPlanner?
+    
+    init (initialDay: Day) {
+        self.day = initialDay
+    }
 }

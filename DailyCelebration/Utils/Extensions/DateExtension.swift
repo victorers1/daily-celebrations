@@ -8,18 +8,24 @@
 import Foundation
 
 extension Date {
+    var dateComponents: DateComponents {
+        var calendar = Calendar(identifier: .gregorian)
+        return calendar
+            .dateComponents(in: TimeZone(secondsFromGMT: 0)!, from: self)
+    }
+
     var year: Int {
-        return Calendar.current.component(.year, from: self)
+        return dateComponents.year ?? 0
     }
 
     var month: Int {
-        return Calendar.current.component(.month, from: self)
+        return dateComponents.month ?? 0
     }
 
     var day: Int {
-        return Calendar.current.component(.day, from: self)
+        return dateComponents.day ?? 0
     }
-    
+
     /// Returns a Date without Time and Timezone information.
     var ddMMMyyyy: String {
         let dateFormatter = DateFormatter()
@@ -31,5 +37,10 @@ extension Date {
         dateFormatter.timeStyle = .none
 
         return dateFormatter.string(from: self)
+    }
+
+    var ddMMM: String {
+        return ddMMMyyyy.replacingOccurrences(of: "\(year)", with: "")
+            .trimmingCharacters(in: [" "])
     }
 }
