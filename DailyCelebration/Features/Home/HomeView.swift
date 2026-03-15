@@ -17,7 +17,7 @@ struct HomeView: View {
     var body: some View {
         NavigationStack(path: $stackPath) {
             if vm.isLoading {
-                Text("Loading...")
+                ProgressView()
             } else {
                 List {
                     Section {

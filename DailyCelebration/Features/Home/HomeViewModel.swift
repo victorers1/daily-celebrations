@@ -16,26 +16,27 @@ class HomeViewModel: ObservableObject {
     @Published var isLoading: Bool = true
 
     func decodeYear() {
-        isLoading = true
-
         if let url = Bundle.main.url(forResource: "2026", withExtension: "json") {
             do {
-                let data = try Data(contentsOf: url)
+                isLoading = true
+                
+                Thread.sleep(forTimeInterval: 3)
 
+                let data = try Data(contentsOf: url)
                 let decoder = JSONDecoder()
                 decoder.keyDecodingStrategy = .convertFromSnakeCase
                 year = try decoder
                     .decode(Year.self, from: data)
 
                 print("current year: \(String(describing: year))")
-
+                isLoading = false
             } catch {
                 print("Error decoding JSON data: \(error)")
+                isLoading = false
             }
         } else {
             print("URL not found")
+            isLoading = false
         }
-
-        isLoading = false
     }
 }

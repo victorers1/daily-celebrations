@@ -9,8 +9,7 @@ import Foundation
 
 extension Date {
     var dateComponents: DateComponents {
-        var calendar = Calendar(identifier: .gregorian)
-        return calendar
+        return Calendar(identifier: .gregorian)
             .dateComponents(in: TimeZone(secondsFromGMT: 0)!, from: self)
     }
 

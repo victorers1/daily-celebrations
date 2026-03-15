@@ -8,89 +8,85 @@
 import SwiftUI
 
 struct DayDetailsView: View {
-    @State private var day: Day
-    @State private var celebrationPlanner: CelebrationPlanner?
+    @StateObject private var vm: DayDetailsViewModel
 
     init(day: Day) {
-        self.day = day
+        _vm = StateObject(wrappedValue: DayDetailsViewModel(initialDay: day))
     }
 
     var body: some View {
         ScrollView {
-            if let planner = self.celebrationPlanner {
-                VStack {
+            VStack {
+                ZStack {
                     Text("IA Generated Image")
                         .frame(maxWidth: .infinity, minHeight: 200, alignment: .center)
-                        .background(Color(.blue))
+                        .clipShape(RoundedRectangle(cornerRadius: 20))
+                        .glassEffect(
+                            .regular.tint(.blue).interactive(),
+                            in: .rect(cornerRadius: 20)
+                        )
                         .padding(.bottom, 36)
-
-                    if planner.isPlanning {
-                        HStack() {
-                            Image(systemName: "sparkles")
-                                .pulseOpacityEffect()
-                                .font(.largeTitle)
-                                
-                            Text("Generating description...")
-                                .frame(maxWidth: .infinity, alignment: .leading)
-                        }.transition(.opacity)
-                    }
-
-                    if let dayActivities = planner.currentDayActivities {
-                        getDayActivitiesView(dayActivities: dayActivities)
-                    }
-
                 }
-                .animation(.easeInOut(duration: 0.5), value: planner.isPlanning)
-                .navigationTitle(day.date.ddMMMyyyy)
-                    .navigationSubtitle("Details")
-                    .toolbar {
-                        ToolbarItemGroup(placement: .bottomBar) {
-                            ToolbarButton(systemName: "chevron.left") {
-                                print("chevron.left pressed")
-                            }
 
-                            ToolbarButton(systemName: "arrow.clockwise") {
-                                Task {
-                                    do {
-                                        print("arrow.clockwise pressed")
-                                        try await planner.suggestItinerary()
-                                    } catch {
-                                        // TODO: Surface error to the UI
-                                        print("Failed to suggest itinerary: \(error)")
-                                    }
-                                }
-                            }
+                if vm.planner.isPlanning {
+                    HStack {
+                        Image(systemName: "sparkles")
+                            .pulseOpacityEffect()
+                            .font(.largeTitle)
 
-                            ToolbarButton(systemName: "square.and.arrow.up") {
-                                print("square.and.arrow.up pressed")
-                            }
+                        Text("Generating description...")
+                            .frame(maxWidth: .infinity, alignment: .leading)
+                    }.transition(.opacity)
+                }
 
-                            ToolbarButton(systemName: "chevron.right") {
-                                print("chevron.right pressed")
-                            }
-                        }
+                if let dayActivities = vm.planner.currentDayActivities {
+                    getDayActivitiesView(dayActivities: dayActivities)
+                }
+            }
+            .animation(.easeInOut(duration: 0.5), value: vm.planner.isPlanning)
+            .navigationTitle(vm.day.date.ddMMMyyyy)
+            .toolbar {
+                ToolbarItemGroup(placement: .bottomBar) {
+                    ToolbarButton(systemName: "chevron.left") {
+                        print("chevron.left pressed")
+                    }
 
-                        ToolbarSpacer(.fixed, placement: .bottomBar)
-                        
-                        ToolbarItem(placement: .bottomBar) {
-                            Button {
-                                print("square.and.arrow.down.badge.clock pressed")
-                            } label: {
-                                Image(systemName: "square.and.arrow.down.badge.clock")
+                    ToolbarButton(systemName: "arrow.clockwise") {
+                        Task {
+                            do {
+                                print("arrow.clockwise pressed")
+                                try await vm.planner.suggestItinerary()
+                            } catch {
+                                // TODO: Surface error to the UI
+                                print("Failed to suggest itinerary: \(error)")
                             }
                         }
                     }
-                    .padding(16)
+
+                    ToolbarButton(systemName: "square.and.arrow.up") {
+                        print("square.and.arrow.up pressed")
+                    }
+
+                    ToolbarButton(systemName: "chevron.right") {
+                        print("chevron.right pressed")
+                    }
+                }
+
+                ToolbarSpacer(.fixed, placement: .bottomBar)
+
+                ToolbarItem(placement: .bottomBar) {
+                    Button {
+                        print("square.and.arrow.down.badge.clock pressed")
+                    } label: {
+                        Image(systemName: "square.and.arrow.down.badge.clock")
+                    }
+                }
             }
+            .padding(16)
 
         }.task {
-            guard celebrationPlanner == nil else { return }
-
-            celebrationPlanner = CelebrationPlanner(day: day)
-            print("Created planner on day \(day)")
-
             do {
-                try await celebrationPlanner?.suggestItinerary()
+                try await vm.suggestItinerary()
             } catch {
                 // TODO: Surface error to the UI
                 print("Failed to suggest itinerary: \(error)")
