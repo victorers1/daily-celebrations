@@ -20,11 +20,19 @@ final class RemoteDatabase {
         return ["TODO"]
     }
 
-    func getCelebrations(of year: String) async throws -> Year? {
+    func getCelebrations(of year: String) async throws -> Year {
+        print("Getting year: \(year)")
         let document = try await firestore.document("years/\(year)").getDocument(as: FirestoreDocument.self)
+
+        guard !document.json.isEmpty else {
+            throw NSError(domain: "RemoteDatabase", code: 0, userInfo: [NSLocalizedDescriptionKey: "Empty JSON for year \(year)"])
+        }
+
         let decoder = JSONDecoder()
         decoder.keyDecodingStrategy = .convertFromSnakeCase
-        let result = try decoder.decode(Year.self, from: document.json)
+
+        let data = Data(document.json.utf8)
+        let result = try decoder.decode(Year.self, from: data)
 
         print("Fetched document \(result)")
         return result

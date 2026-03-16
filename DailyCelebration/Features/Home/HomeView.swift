@@ -59,11 +59,9 @@ struct HomeView: View {
                         }
                     }
                 }
-                .tabBarMinimizeBehavior(.onScrollDown)
             }
-
         }.task {
-            vm.getYear()
+            await vm.getYear(of: "\(Date().year)")
         }
     }
 }
