@@ -15,28 +15,30 @@ class HomeViewModel: ObservableObject {
     @Published var year: Year = Year.empty()
     @Published var isLoading: Bool = true
 
-    func decodeYear() {
+    let db = RemoteDatabase()
+
+    func getYear(of year: String) {
         if let url = Bundle.main.url(forResource: "2026", withExtension: "json") {
             do {
                 isLoading = true
-                
+
                 Thread.sleep(forTimeInterval: 3)
 
-                let data = try Data(contentsOf: url)
-                let decoder = JSONDecoder()
-                decoder.keyDecodingStrategy = .convertFromSnakeCase
-                year = try decoder
-                    .decode(Year.self, from: data)
+
+                self.year = await db.getCelebrations(of: year)
 
                 print("current year: \(String(describing: year))")
                 isLoading = false
             } catch {
-                print("Error decoding JSON data: \(error)")
+                print("Error getting year: \(error)")
                 isLoading = false
             }
         } else {
             print("URL not found")
             isLoading = false
         }
+    }
+
+    func changeYear(to year: String) {
     }
 }

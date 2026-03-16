@@ -63,7 +63,7 @@ struct HomeView: View {
             }
 
         }.task {
-            vm.decodeYear()
+            vm.getYear()
         }
     }
 }

@@ -29,7 +29,7 @@ final class CelebrationPlanner {
                 
         session = LanguageModelSession {
             // Instructions
-            "You job is to create an itinerary so the user."
+            "You job is to create an itinerary to the user."
             Self.userLocaleInstruction()
             "Here is an example:"
             DayActivities.exampleToTheModel
@@ -41,7 +41,7 @@ final class CelebrationPlanner {
             generating: DayActivities.self
         ) {
             // Prompt
-            "Today is celebrated: \(currentDay.events.joined(separator: ", ")). Generate 3 to 4 paragraphs of text talking about today's celebration. Also, generate some activities so the user can celebrate at least on the these events. Events names will be in the user's language."
+            "Today is celebrated: \(currentDay.events.joined(separator: ", ")). Generate 3 to 4 paragraphs of text talking about today's celebration. Also, generate some activities so the user can celebrate at least one of the these events. Events names will be in the user's language."
         }
         
         for try await partialResponse in streamResponse {
