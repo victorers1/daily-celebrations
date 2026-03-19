@@ -13,20 +13,13 @@ import Observation
 @MainActor
 final class CelebrationPlanner {
     private(set) var currentDayActivities: DayActivities.PartiallyGenerated?
-    private(set) var currentDay: Day
     private let session: LanguageModelSession
-    
-    // TODO: cache opened days in the global state
-    private let openedDays: [Day: DayActivities.PartiallyGenerated] = [:]
-    
+
     var isPlanning: Bool {
         session.isResponding
     }
-    
-    
-    init(day: Day) {
-        self.currentDay = day
-                
+
+    init() {
         session = LanguageModelSession {
             // Instructions
             "You job is to create an itinerary to the user."
@@ -36,21 +29,21 @@ final class CelebrationPlanner {
         }
     }
 
-    func suggestItinerary() async throws {
+    func suggestItinerary(for day: Day) async throws {
         let streamResponse = session.streamResponse(
             generating: DayActivities.self
         ) {
             // Prompt
-            "Today is celebrated: \(currentDay.events.joined(separator: ", ")). Generate 3 to 4 paragraphs of text talking about today's celebration. Also, generate some activities so the user can celebrate at least one of the these events. Events names will be in the user's language."
+            "Today is celebrated: \(day.events.joined(separator: ", ")). Generate 3 to 4 paragraphs of text talking about today's celebration. Also, generate some activities so the user can celebrate at least one of the these events. Events names will be in the user's language."
         }
-        
+
         for try await partialResponse in streamResponse {
             currentDayActivities = partialResponse.content
         }
-        
+
         print("Planner suggested itinerary: \(currentDayActivities, default: "")")
     }
-    
+
     /// Forces the response to be in the user's language
     static func userLocaleInstruction(for locale: Locale = Locale.current) -> String {
         if Locale.Language(identifier: "en_US").isEquivalent(to: locale.language) {

@@ -7,12 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		D42613272F61FDBE00127BC3 /* FirebaseAnalytics in Frameworks */ = {isa = PBXBuildFile; productRef = D42613262F61FDBE00127BC3 /* FirebaseAnalytics */; };
-		D42613292F61FDBE00127BC3 /* FirebaseAnalyticsCore in Frameworks */ = {isa = PBXBuildFile; productRef = D42613282F61FDBE00127BC3 /* FirebaseAnalyticsCore */; };
 		D426132B2F61FDBE00127BC3 /* FirebaseCore in Frameworks */ = {isa = PBXBuildFile; productRef = D426132A2F61FDBE00127BC3 /* FirebaseCore */; };
-		D426132D2F61FDBE00127BC3 /* FirebaseCrashlytics in Frameworks */ = {isa = PBXBuildFile; productRef = D426132C2F61FDBE00127BC3 /* FirebaseCrashlytics */; };
 		D426132F2F61FDBE00127BC3 /* FirebaseFirestore in Frameworks */ = {isa = PBXBuildFile; productRef = D426132E2F61FDBE00127BC3 /* FirebaseFirestore */; };
-		D4B2097C2F5729D500BBA32B /* SDWebImageSwiftUI in Frameworks */ = {isa = PBXBuildFile; productRef = D4B2097B2F5729D500BBA32B /* SDWebImageSwiftUI */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -32,11 +28,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				D42613272F61FDBE00127BC3 /* FirebaseAnalytics in Frameworks */,
-				D42613292F61FDBE00127BC3 /* FirebaseAnalyticsCore in Frameworks */,
-				D426132D2F61FDBE00127BC3 /* FirebaseCrashlytics in Frameworks */,
 				D426132B2F61FDBE00127BC3 /* FirebaseCore in Frameworks */,
-				D4B2097C2F5729D500BBA32B /* SDWebImageSwiftUI in Frameworks */,
 				D426132F2F61FDBE00127BC3 /* FirebaseFirestore in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -80,11 +72,7 @@
 			);
 			name = DailyCelebration;
 			packageProductDependencies = (
-				D4B2097B2F5729D500BBA32B /* SDWebImageSwiftUI */,
-				D42613262F61FDBE00127BC3 /* FirebaseAnalytics */,
-				D42613282F61FDBE00127BC3 /* FirebaseAnalyticsCore */,
 				D426132A2F61FDBE00127BC3 /* FirebaseCore */,
-				D426132C2F61FDBE00127BC3 /* FirebaseCrashlytics */,
 				D426132E2F61FDBE00127BC3 /* FirebaseFirestore */,
 			);
 			productName = DailyCelebration;
@@ -116,7 +104,6 @@
 			mainGroup = D4C64F492F3BA53300DCC409;
 			minimizedProjectReferenceProxies = 1;
 			packageReferences = (
-				D4B2097A2F5729D500BBA32B /* XCRemoteSwiftPackageReference "SDWebImageSwiftUI" */,
 				D42613252F61FDBE00127BC3 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */,
 			);
 			preferredProjectObjectVersion = 77;
@@ -369,46 +356,18 @@
 				minimumVersion = 12.10.0;
 			};
 		};
-		D4B2097A2F5729D500BBA32B /* XCRemoteSwiftPackageReference "SDWebImageSwiftUI" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/SDWebImage/SDWebImageSwiftUI.git";
-			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 3.1.4;
-			};
-		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
-		D42613262F61FDBE00127BC3 /* FirebaseAnalytics */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = D42613252F61FDBE00127BC3 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
-			productName = FirebaseAnalytics;
-		};
-		D42613282F61FDBE00127BC3 /* FirebaseAnalyticsCore */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = D42613252F61FDBE00127BC3 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
-			productName = FirebaseAnalyticsCore;
-		};
 		D426132A2F61FDBE00127BC3 /* FirebaseCore */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = D42613252F61FDBE00127BC3 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
 			productName = FirebaseCore;
 		};
-		D426132C2F61FDBE00127BC3 /* FirebaseCrashlytics */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = D42613252F61FDBE00127BC3 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
-			productName = FirebaseCrashlytics;
-		};
 		D426132E2F61FDBE00127BC3 /* FirebaseFirestore */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = D42613252F61FDBE00127BC3 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
 			productName = FirebaseFirestore;
-		};
-		D4B2097B2F5729D500BBA32B /* SDWebImageSwiftUI */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = D4B2097A2F5729D500BBA32B /* XCRemoteSwiftPackageReference "SDWebImageSwiftUI" */;
-			productName = SDWebImageSwiftUI;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

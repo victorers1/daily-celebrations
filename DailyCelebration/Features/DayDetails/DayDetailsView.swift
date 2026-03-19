@@ -9,9 +9,15 @@ import SwiftUI
 
 struct DayDetailsView: View {
     @StateObject private var vm: DayDetailsViewModel
+    private var appState: DailyCelebrationAppViewModel
 
-    init(day: Day) {
-        _vm = StateObject(wrappedValue: DayDetailsViewModel(initialDay: day))
+    init(appState: DailyCelebrationAppViewModel, initialDayIndex: Int) {
+        self.appState = appState
+        let ddvm = DayDetailsViewModel(
+            allDays: appState.allDays,
+            initialDayIndex: initialDayIndex
+        )
+        _vm = StateObject(wrappedValue: ddvm)
     }
 
     var body: some View {
@@ -34,7 +40,7 @@ struct DayDetailsView: View {
                             .pulseOpacityEffect()
                             .font(.largeTitle)
 
-                        Text("Generating description...")
+                        Text("Gerando descrição...")
                             .frame(maxWidth: .infinity, alignment: .leading)
                     }.transition(.opacity)
                 }
@@ -55,7 +61,7 @@ struct DayDetailsView: View {
                         Task {
                             do {
                                 print("arrow.clockwise pressed")
-                                try await vm.planner.suggestItinerary()
+                                try await vm.suggestItinerary()
                             } catch {
                                 // TODO: Surface error to the UI
                                 print("Failed to suggest itinerary: \(error)")
@@ -124,7 +130,8 @@ struct ToolbarButton: View {
 }
 
 #Preview {
+    let ddvm = DailyCelebrationAppViewModel()
     DayDetailsView(
-        day: Day(date: Date.now, events: ["Dia do sanitarista", "Dia mundial do introvertido"]),
+        appState: ddvm, initialDayIndex: 0
     )
 }

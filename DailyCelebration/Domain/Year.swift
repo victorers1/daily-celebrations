@@ -21,11 +21,7 @@ struct Year: Decodable, CustomStringConvertible, Identifiable {
     let oct: [Day]
     let nov: [Day]
     let dec: [Day]
-
-    var description: String {
-        return "\(id)"
-    }
-
+    
     func getMonths() -> [[String: [Day]]] {
         return [
             ["Janeiro": jan],
@@ -59,5 +55,9 @@ struct Year: Decodable, CustomStringConvertible, Identifiable {
             nov: [],
             dec: []
         )
+    }
+    
+    var description: String {
+        return "\(id)"
     }
 }

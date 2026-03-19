@@ -23,9 +23,13 @@ struct DailyCelebrationApp: App {
     // register app delegate for Firebase setup
     @UIApplicationDelegateAdaptor(AppDelegate.self) var delegate
 
+    @State private var appState = DailyCelebrationAppViewModel()
+
     var body: some Scene {
         WindowGroup {
-            HomeView()
+            HomeView(appState: appState).onAppear {
+                appState.db = RemoteDatabase()
+            }
         }
     }
 }

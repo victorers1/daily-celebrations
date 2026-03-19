@@ -11,15 +11,31 @@ import Foundation
 @MainActor
 class DayDetailsViewModel: ObservableObject {
     
-    @Published var day: Day
-    @Published var planner: CelebrationPlanner
+    private let allDays: [Day]
+    @Published var dayIndex: Int
+    let planner = CelebrationPlanner()
     
-    init (initialDay: Day) {
-        self.day = initialDay
-        self.planner = CelebrationPlanner(day: initialDay)
+    var day: Day {
+        allDays[dayIndex]
+    }
+
+    init(allDays: [Day], initialDayIndex: Int) {
+        self.allDays = allDays
+        dayIndex = initialDayIndex
     }
     
-    func suggestItinerary() async  throws {
-        try await planner.suggestItinerary()
+
+    func suggestItinerary() async throws {
+        try await planner.suggestItinerary(for: day)
+    }
+
+    func incrementDay() async throws {
+        dayIndex += 1
+        try await suggestItinerary()
+    }
+
+    func decrementDay() async throws {
+        dayIndex -= 1
+        try await suggestItinerary()
     }
 }

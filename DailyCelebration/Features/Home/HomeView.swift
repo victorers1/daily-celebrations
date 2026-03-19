@@ -9,10 +9,16 @@ import Foundation
 import SwiftUI
 
 struct HomeView: View {
-    @StateObject private var vm = HomeViewModel()
+    @StateObject private var vm: HomeViewModel
+    private var appState: DailyCelebrationAppViewModel
 
     @State private var stackPath: [Day] = []
     @State private var searchText: String = ""
+
+    init(appState: DailyCelebrationAppViewModel) {
+        self.appState = appState
+        _vm = StateObject(wrappedValue: HomeViewModel(appState: appState))
+    }
 
     var body: some View {
         NavigationStack(path: $stackPath) {
@@ -22,7 +28,7 @@ struct HomeView: View {
                 List {
                     Section {
                         // Compute months and names with explicit types to help type-checker
-                        let months: [[String: [Day]]] = vm.year.getMonths()
+                        let months: [[String: [Day]]] = appState.year.getMonths()
 
                         ForEach(months, id: \.self.keys.first) { month in
                             let monthName = month.keys.first
@@ -43,29 +49,32 @@ struct HomeView: View {
                         }
                     }
                 }
-                .navigationDestination(for: Day.self) { day in
-                    DayDetailsView(day: day)
-                }.navigationBarTitle(Text(verbatim: String(describing: vm.year)))
+                .navigationBarTitle(Text(verbatim: String(describing: appState.year)))
                 .searchable(text: $searchText)
                 .toolbar {
-                    DefaultToolbarItem(kind: .search, placement: .bottomBar)
-
-                    ToolbarSpacer(.fixed, placement: .bottomBar)
-
-                    ToolbarItem(placement: .bottomBar) {
+                    ToolbarItem(placement: .automatic) {
                         Button {
                         } label: {
                             Image(systemName: "square.and.arrow.down.badge.clock")
                         }
                     }
                 }
+
+                .navigationDestination(for: Day.self) { day in
+                    let initialDayIndex: Int = self.appState.allDays.firstIndex { d in
+                        d.date == day.date
+                    } ?? 0
+                    DayDetailsView(appState: self.appState, initialDayIndex: initialDayIndex)
+                }
             }
-        }.task {
+        }
+        .task {
             await vm.getYear(of: "\(Date().year)")
         }
     }
 }
 
 #Preview {
-    HomeView()
+    let appState = DailyCelebrationAppViewModel()
+    HomeView(appState: appState)
 }

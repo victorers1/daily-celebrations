@@ -7,31 +7,49 @@
 
 import Combine
 import Foundation
+import SwiftUI
 
 @MainActor // prevents the calling of DispatchQueue.main.async {}
 class HomeViewModel: ObservableObject {
-    init() {}
-
-    @Published var year: Year = Year.empty()
     @Published var isLoading: Bool = true
+    private let appState: DailyCelebrationAppViewModel
 
-    let db = RemoteDatabase()
+    init(appState: DailyCelebrationAppViewModel) {
+        self.appState = appState
+    }
 
     func getYear(of year: String) async {
+        guard let db = appState.db else { return }
+        
         do {
             isLoading = true
 
-            self.year = try await db.getCelebrations(of: year)
+            appState.year = try await db.getCelebrations(of: year)
 
-            print("current year: \(self.year)")
+            let months = [
+                appState.year.jan,
+                appState.year.feb,
+                appState.year.mar,
+                appState.year.apr,
+                appState.year.may,
+                appState.year.jun,
+                appState.year.jul,
+                appState.year.aug,
+                appState.year.sep,
+                appState.year.oct,
+                appState.year.nov,
+                appState.year.dec,
+            ]
+
+            months.forEach { daysOfMonth in
+                appState.allDays.append(contentsOf: daysOfMonth)
+            }
+
+            print("current year: \(appState.year)")
             isLoading = false
         } catch {
             print("Error getting year: \(error)")
             isLoading = false
         }
-    }
-
-    func changeYear(to year: String) async {
-        await getYear(of: year)
     }
 }
