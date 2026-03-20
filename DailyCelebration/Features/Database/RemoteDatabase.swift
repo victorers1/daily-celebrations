@@ -22,6 +22,7 @@ final class RemoteDatabase {
 
     func getCelebrations(of year: String) async throws -> Year {
         print("Getting year: \(year)")
+        
         let document = try await firestore.document("years/\(year)").getDocument(as: FirestoreDocument.self)
 
         guard !document.json.isEmpty else {
@@ -30,7 +31,6 @@ final class RemoteDatabase {
 
         let decoder = JSONDecoder()
         decoder.keyDecodingStrategy = .convertFromSnakeCase
-
         let data = Data(document.json.utf8)
         let result = try decoder.decode(Year.self, from: data)
 

@@ -14,7 +14,7 @@ struct DayDetailsView: View {
     init(appState: DailyCelebrationAppViewModel, initialDayIndex: Int) {
         self.appState = appState
         let ddvm = DayDetailsViewModel(
-            allDays: appState.allDays,
+            appState: appState,
             initialDayIndex: initialDayIndex
         )
         _vm = StateObject(wrappedValue: ddvm)
@@ -23,17 +23,6 @@ struct DayDetailsView: View {
     var body: some View {
         ScrollView {
             VStack {
-                ZStack {
-                    Text("IA Generated Image")
-                        .frame(maxWidth: .infinity, minHeight: 200, alignment: .center)
-                        .clipShape(RoundedRectangle(cornerRadius: 20))
-                        .glassEffect(
-                            .regular.tint(.blue).interactive(),
-                            in: .rect(cornerRadius: 20)
-                        )
-                        .padding(.bottom, 36)
-                }
-
                 if vm.planner.isPlanning {
                     HStack {
                         Image(systemName: "sparkles")
@@ -54,18 +43,14 @@ struct DayDetailsView: View {
             .toolbar {
                 ToolbarItemGroup(placement: .bottomBar) {
                     ToolbarButton(systemName: "chevron.left") {
-                        print("chevron.left pressed")
+                        Task {
+                            await vm.decrementDay()
+                        }
                     }
 
                     ToolbarButton(systemName: "arrow.clockwise") {
                         Task {
-                            do {
-                                print("arrow.clockwise pressed")
-                                try await vm.suggestItinerary()
-                            } catch {
-                                // TODO: Surface error to the UI
-                                print("Failed to suggest itinerary: \(error)")
-                            }
+                            await vm.suggestItinerary()
                         }
                     }
 
@@ -74,7 +59,9 @@ struct DayDetailsView: View {
                     }
 
                     ToolbarButton(systemName: "chevron.right") {
-                        print("chevron.right pressed")
+                        Task {
+                            await vm.incrementDay()
+                        }
                     }
                 }
 
@@ -82,21 +69,17 @@ struct DayDetailsView: View {
 
                 ToolbarItem(placement: .bottomBar) {
                     Button {
-                        print("square.and.arrow.down.badge.clock pressed")
+                        Task {
+                            await vm.goToToday()
+                        }
                     } label: {
                         Image(systemName: "square.and.arrow.down.badge.clock")
                     }
                 }
             }
             .padding(16)
-
         }.task {
-            do {
-                try await vm.suggestItinerary()
-            } catch {
-                // TODO: Surface error to the UI
-                print("Failed to suggest itinerary: \(error)")
-            }
+            await vm.suggestItinerary()
         }
     }
 

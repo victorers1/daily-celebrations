@@ -20,30 +20,17 @@ class HomeViewModel: ObservableObject {
 
     func getYear(of year: String) async {
         guard let db = appState.db else { return }
-        
+
         do {
             isLoading = true
 
-            appState.year = try await db.getCelebrations(of: year)
+            let response = try await db.getCelebrations(of: year)
 
-            let months = [
-                appState.year.jan,
-                appState.year.feb,
-                appState.year.mar,
-                appState.year.apr,
-                appState.year.may,
-                appState.year.jun,
-                appState.year.jul,
-                appState.year.aug,
-                appState.year.sep,
-                appState.year.oct,
-                appState.year.nov,
-                appState.year.dec,
-            ]
+            appState.allDays = response.allDays(indexed: true)
 
-            months.forEach { daysOfMonth in
-                appState.allDays.append(contentsOf: daysOfMonth)
-            }
+            appState.year = try Year(from: appState.allDays)
+
+            appState.visibleYear = appState.year
 
             print("current year: \(appState.year)")
             isLoading = false

@@ -7,7 +7,8 @@
 
 import Foundation
 
-struct Day: Hashable, Decodable {
+struct Day: Hashable, Decodable, Identifiable {
+    let id: Int
     let date: Date
     let events: [String]
 
@@ -16,7 +17,8 @@ struct Day: Hashable, Decodable {
         case events
     }
 
-    init(date: Date, events: [String]) {
+    init(id: Int, date: Date, events: [String]) {
+        self.id = id
         self.date = date
         self.events = events
     }
@@ -26,20 +28,20 @@ struct Day: Hashable, Decodable {
 
         // Decode date as string
         let dateString = try container.decode(String.self, forKey: .date)
-        
+
         let formatter = DateFormatter()
         formatter.calendar = Calendar(identifier: .gregorian)
         formatter.locale = Locale(identifier: "en_US_POSIX")
         formatter.timeZone = TimeZone(secondsFromGMT: 0)
         formatter.dateFormat = "yyyy-MM-dd"
-        
+
         guard let parsedDate: Date = formatter.date(from: dateString) else {
             fatalError("Invalid date string format: \(dateString)")
         }
-        
-        self.date = parsedDate
 
-        self.events = try container.decode([String].self, forKey: .events)
+        id = 0
+        date = parsedDate
+        events = try container.decode([String].self, forKey: .events)
     }
 
     func hash(into hasher: inout Hasher) {

@@ -25,6 +25,7 @@ struct DayListTile: View {
 #Preview {
     DayListTile(
         day: Day(
+            id: 0,
             date: Calendar.current
                 .date(from: DateComponents(year: 2026, month: 1, day: 1))!,
             events: [

@@ -54,4 +54,8 @@ final class CelebrationPlanner {
             return "The person's locale is \(locale.identifier). You MUST respond in that language."
         }
     }
+    
+    func deleteItinerary() {
+        currentDayActivities = nil
+    }
 }

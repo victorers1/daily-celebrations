@@ -59,7 +59,6 @@ struct HomeView: View {
                         }
                     }
                 }
-
                 .navigationDestination(for: Day.self) { day in
                     let initialDayIndex: Int = self.appState.allDays.firstIndex { d in
                         d.date == day.date

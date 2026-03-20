@@ -10,32 +10,50 @@ import Foundation
 
 @MainActor
 class DayDetailsViewModel: ObservableObject {
-    
-    private let allDays: [Day]
+    private let appState: DailyCelebrationAppViewModel
     @Published var dayIndex: Int
     let planner = CelebrationPlanner()
-    
+
     var day: Day {
-        allDays[dayIndex]
+        appState.allDays[dayIndex]
     }
 
-    init(allDays: [Day], initialDayIndex: Int) {
-        self.allDays = allDays
+    var todayIndex: Int {
+        return appState.allDays.firstIndex { day in
+            day.date == Date()
+        } ?? 0
+    }
+
+    init(appState: DailyCelebrationAppViewModel, initialDayIndex: Int) {
+        self.appState = appState
         dayIndex = initialDayIndex
     }
-    
 
-    func suggestItinerary() async throws {
-        try await planner.suggestItinerary(for: day)
+    func suggestItinerary() async {
+        do {
+            planner.deleteItinerary()
+            try await planner.suggestItinerary(for: day)
+        } catch {
+            print("Failed to suggest itinerary: \(error)")
+        }
     }
 
-    func incrementDay() async throws {
-        dayIndex += 1
-        try await suggestItinerary()
+    func incrementDay() async {
+        if dayIndex < 365 {
+            dayIndex += 1
+            await suggestItinerary()
+        }
     }
 
-    func decrementDay() async throws {
-        dayIndex -= 1
-        try await suggestItinerary()
+    func decrementDay() async {
+        if dayIndex > 0 {
+            dayIndex -= 1
+            await suggestItinerary()
+        }
+    }
+
+    func goToToday() async {
+        dayIndex = todayIndex
+        await suggestItinerary()
     }
 }

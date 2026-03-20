@@ -39,7 +39,11 @@ extension Date {
     }
 
     var ddMMM: String {
-        return ddMMMyyyy.replacingOccurrences(of: "\(year)", with: "")
+        ddMMMyyyy.replacingOccurrences(of: "\(year)", with: "")
             .trimmingCharacters(in: [" "])
+    }
+
+    func isEqualsTo(other: Date) -> Bool {
+        day == other.day && month == other.month && year == other.year
     }
 }
