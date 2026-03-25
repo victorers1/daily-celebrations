@@ -54,9 +54,11 @@ struct DayDetailsView: View {
                         }
                     }
 
-                    ToolbarButton(systemName: "square.and.arrow.up") {
-                        print("square.and.arrow.up pressed")
-                    }
+                    ShareLink(
+                        item: vm.planner.currentDayActivities?.description ?? "",
+                    ) {
+                        Image(systemName: "square.and.arrow.up").padding(10)
+                    }.disabled(vm.planner.isPlanning)
 
                     ToolbarButton(systemName: "chevron.right") {
                         Task {
@@ -65,15 +67,17 @@ struct DayDetailsView: View {
                     }
                 }
 
-                ToolbarSpacer(.fixed, placement: .bottomBar)
+                if vm.todayIndex != nil {
+                    ToolbarSpacer(.fixed, placement: .bottomBar)
 
-                ToolbarItem(placement: .bottomBar) {
-                    Button {
-                        Task {
-                            await vm.goToToday()
+                    ToolbarItem(placement: .bottomBar) {
+                        Button {
+                            Task {
+                                await vm.goToToday()
+                            }
+                        } label: {
+                            Image(systemName: "square.and.arrow.down.badge.clock")
                         }
-                    } label: {
-                        Image(systemName: "square.and.arrow.down.badge.clock")
                     }
                 }
             }

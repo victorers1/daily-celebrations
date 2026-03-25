@@ -22,7 +22,7 @@ extension DayActivities {
 
             Activity(
                 type: .shopping,
-                title: "Convidative name for an event #3",
+                title: "Convidative title for an event #3",
                 description: "You deserve to do this activity."
             )],
     )

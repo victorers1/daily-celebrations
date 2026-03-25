@@ -41,7 +41,7 @@ final class CelebrationPlanner {
             currentDayActivities = partialResponse.content
         }
 
-        print("Planner suggested itinerary: \(currentDayActivities, default: "")")
+        print("Planner suggested itinerary")
     }
 
     /// Forces the response to be in the user's language

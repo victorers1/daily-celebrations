@@ -32,7 +32,7 @@ class HomeViewModel: ObservableObject {
 
             appState.visibleYear = appState.year
 
-            print("current year: \(appState.year)")
+            print("got year: \(appState.year)")
             isLoading = false
         } catch {
             print("Error getting year: \(error)")

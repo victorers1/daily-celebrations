@@ -18,10 +18,10 @@ class DayDetailsViewModel: ObservableObject {
         appState.allDays[dayIndex]
     }
 
-    var todayIndex: Int {
+    var todayIndex: Int? {
         return appState.allDays.firstIndex { day in
-            day.date == Date()
-        } ?? 0
+            return day.date.isEqualsTo(other: Date.now)
+        }
     }
 
     init(appState: DailyCelebrationAppViewModel, initialDayIndex: Int) {
@@ -53,7 +53,7 @@ class DayDetailsViewModel: ObservableObject {
     }
 
     func goToToday() async {
-        dayIndex = todayIndex
+        dayIndex = todayIndex ?? 0
         await suggestItinerary()
     }
 }
