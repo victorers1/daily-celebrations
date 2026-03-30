@@ -22,53 +22,68 @@ struct HomeView: View {
 
     var body: some View {
         NavigationStack(path: $stackPath) {
-            if vm.isLoading {
-                ProgressView()
-            } else {
-                List {
+            ScrollViewReader { proxy in
+                if vm.isLoading {
+                    ProgressView()
+                } else {
+                    listView(proxy: proxy)
+                }
+            }
+            .task {
+                await vm.getYear(of: "\(Date().year)")
+            }
+        }
+    }
+
+    func listView(proxy: ScrollViewProxy) -> some View {
+        List {
+            Section {
+                // Compute months and names with explicit types to help type-checker
+                let months: [[String: [Day]]] = appState.year.getMonths()
+
+                ForEach(months, id: \.self.keys.first) { month in
+                    let monthName = month.keys.first
+
                     Section {
-                        // Compute months and names with explicit types to help type-checker
-                        let months: [[String: [Day]]] = appState.year.getMonths()
-
-                        ForEach(months, id: \.self.keys.first) { month in
-                            let monthName = month.keys.first
-
-                            Section {
-                                // Safely unwrap days for this month and iterate with a stable id
-                                if let days = month.values.first {
-                                    ForEach(days, id: \.self) { day in
-                                        DayListTile(day: day)
-                                            .onTapGesture {
-                                                stackPath.append(day)
-                                            }
+                        // Safely unwrap days for this month and iterate with a stable id
+                        if let days = month.values.first {
+                            ForEach(days, id: \.self) { day in
+                                DayListTile(day: day)
+                                    .id(day.id)
+                                    .onTapGesture {
+                                        stackPath.append(day)
                                     }
-                                }
-                            } header: {
-                                Text(monthName ?? "")
                             }
                         }
+                    } header: {
+                        Text(monthName ?? "")
                     }
-                }
-                .navigationBarTitle(Text(verbatim: String(describing: appState.year)))
-                .searchable(text: $searchText)
-                .toolbar {
-                    ToolbarItem(placement: .automatic) {
-                        Button {
-                        } label: {
-                            Image(systemName: "square.and.arrow.down.badge.clock")
-                        }
-                    }
-                }
-                .navigationDestination(for: Day.self) { day in
-                    let initialDayIndex: Int = self.appState.allDays.firstIndex { d in
-                        d.date == day.date
-                    } ?? 0
-                    DayDetailsView(appState: self.appState, initialDayIndex: initialDayIndex)
                 }
             }
         }
-        .task {
-            await vm.getYear(of: "\(Date().year)")
+        .navigationBarTitle(Text(verbatim: String(describing: appState.year)))
+        .searchable(text: $searchText)
+        .toolbar {
+            ToolbarItem(placement: .automatic) {
+                Button {
+                    withAnimation {
+                        proxy.scrollTo(appState.todayIndex, anchor: .top)
+                    }
+                } label: {
+                    Image(systemName: "square.and.arrow.down.badge.clock")
+                }
+            }
+        }
+        .navigationDestination(for: Day.self) { day in
+            let initialDayIndex: Int = self.appState.allDays.firstIndex { d in
+                d.date == day.date
+            } ?? 0
+            DayDetailsView(appState: self.appState, initialDayIndex: initialDayIndex)
+        }
+        .onAppear {
+            withAnimation {
+                proxy.scrollTo(appState.todayIndex, anchor: .top)
+            }
         }
     }
 }

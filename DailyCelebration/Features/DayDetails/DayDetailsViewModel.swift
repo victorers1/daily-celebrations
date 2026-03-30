@@ -12,16 +12,11 @@ import Foundation
 class DayDetailsViewModel: ObservableObject {
     private let appState: DailyCelebrationAppViewModel
     @Published var dayIndex: Int
+    @Published var scheduledNotification: Bool = false
     let planner = CelebrationPlanner()
 
     var day: Day {
         appState.allDays[dayIndex]
-    }
-
-    var todayIndex: Int? {
-        return appState.allDays.firstIndex { day in
-            return day.date.isEqualsTo(other: Date.now)
-        }
     }
 
     init(appState: DailyCelebrationAppViewModel, initialDayIndex: Int) {
@@ -53,7 +48,14 @@ class DayDetailsViewModel: ObservableObject {
     }
 
     func goToToday() async {
-        dayIndex = todayIndex ?? 0
-        await suggestItinerary()
+        let todayIndex = appState.todayIndex
+        if dayIndex != todayIndex {
+            dayIndex = todayIndex ?? 0
+            await suggestItinerary()
+        }
+    }
+
+    var isFutureDay: Bool {
+        return day.date > Date()
     }
 }

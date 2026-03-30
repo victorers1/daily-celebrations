@@ -38,9 +38,18 @@ struct DayDetailsView: View {
                     getDayActivitiesView(dayActivities: dayActivities)
                 }
             }
-            .animation(.easeInOut(duration: 0.5), value: vm.planner.isPlanning)
             .navigationTitle(vm.day.date.ddMMMyyyy)
             .toolbar {
+                ToolbarItem(placement: .automatic) {
+                    Button {
+                        Task {
+                            await vm.goToToday()
+                        }
+                    } label: {
+                        Label("Today", systemImage: "square.and.arrow.down.badge.clock")
+                    }
+                }
+
                 ToolbarItemGroup(placement: .bottomBar) {
                     ToolbarButton(systemName: "chevron.left") {
                         Task {
@@ -67,17 +76,17 @@ struct DayDetailsView: View {
                     }
                 }
 
-                if vm.todayIndex != nil {
+                if vm.isFutureDay {
                     ToolbarSpacer(.fixed, placement: .bottomBar)
 
                     ToolbarItem(placement: .bottomBar) {
                         Button {
-                            Task {
-                                await vm.goToToday()
-                            }
+                            vm.scheduledNotification = appState.notificationService
+                                .scheduleNotification(for: vm.day)
                         } label: {
-                            Image(systemName: "square.and.arrow.down.badge.clock")
-                        }
+                            Label("Schedule Notification", systemImage: "app.badge")
+                        }.disabled(vm.scheduledNotification)
+                            .accessibilityHint("Schedule a notification for this day")
                     }
                 }
             }
