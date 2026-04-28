@@ -7,6 +7,7 @@
 
 import Foundation
 import Observation
+import SwiftUI
 
 import FirebaseCore
 import FirebaseFirestore
@@ -41,4 +42,18 @@ final class RemoteDatabase {
 
 struct FirestoreDocument: Decodable {
     let json: String
+}
+
+
+/// Creates Environment key nad its value
+private struct RemoteDatabaseKey: EnvironmentKey {
+    static let defaultValue: RemoteDatabase = .init()
+}
+
+/// Adds key to environment values
+extension EnvironmentValues {
+    var remoteDatabase: RemoteDatabase {
+        get { self[RemoteDatabaseKey.self] }
+        set { self[RemoteDatabaseKey.self] = newValue }
+    }
 }

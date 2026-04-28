@@ -9,15 +9,14 @@ import Foundation
 import SwiftUI
 
 struct HomeView: View {
+    @Environment(\.appState) private var appState
     @StateObject private var vm: HomeViewModel
-    private var appState: DailyCelebrationAppViewModel
 
     @State private var stackPath: [Day] = []
     @State private var searchText: String = ""
-
-    init(appState: DailyCelebrationAppViewModel) {
-        self.appState = appState
-        _vm = StateObject(wrappedValue: HomeViewModel(appState: appState))
+    
+    init() {
+        _vm = StateObject(wrappedValue: HomeViewModel(appState: DailyCelebrationAppViewModel()))
     }
 
     var body: some View {
@@ -30,6 +29,7 @@ struct HomeView: View {
                 }
             }
             .task {
+                appState.db = RemoteDatabase()
                 await vm.getYear(of: "\(Date().year)")
             }
         }
@@ -89,6 +89,11 @@ struct HomeView: View {
 }
 
 #Preview {
-    let appState = DailyCelebrationAppViewModel()
-    HomeView(appState: appState)
+    NavigationStack {
+        HomeView()
+            .environment(\.appState, DailyCelebrationAppViewModel())
+            .environment(\.remoteDatabase, RemoteDatabase())
+    }
+    
 }
+

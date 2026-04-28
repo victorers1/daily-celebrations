@@ -6,11 +6,13 @@
 //
 
 import Combine
+import SwiftUI
 import Foundation
 import Observation
 
 @Observable
-class DailyCelebrationAppViewModel { // Global State
+/// Global State
+class DailyCelebrationAppViewModel {
     var year: Year = Year.empty()
     var visibleYear: Year = Year.empty()
 
@@ -34,5 +36,20 @@ class DailyCelebrationAppViewModel { // Global State
         allDays.firstIndex { d in
             d.date.isEqualsTo(other: day.date)
         }
+    }
+}
+
+/// Creates environment key and its value
+/// TODO: remove
+private struct DailyCelebrationAppViewModelKey: EnvironmentKey {
+    static var defaultValue: DailyCelebrationAppViewModel = .init()
+}
+
+/// Adds key to environment
+/// TODO: remove
+extension EnvironmentValues {
+    var appState: DailyCelebrationAppViewModel {
+        get { self[DailyCelebrationAppViewModelKey.self] }
+        set { self[DailyCelebrationAppViewModelKey.self] = newValue }
     }
 }

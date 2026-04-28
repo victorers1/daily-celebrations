@@ -40,14 +40,13 @@ class NotificationService {
         content.body = "Hoje é \(day.events.first!)"
         content.sound = .default
 
-        // 👇 Create date for tomorrow at same time
-        let calendar = Calendar.current
+        // 👇 Create date for tomorrow at 9 a.m.
         var components = DateComponents()
         components.year = 2026 // calendar.component(.year, from: day.date)
         components.month = 3 // calendar.component(.month, from: day.date)
         components.day = 30 // calendar.component(.day, from: day.date)
-        components.hour = 11
-        components.minute = 34
+        components.hour = 9
+        components.minute = 0
 
         let trigger = UNCalendarNotificationTrigger(dateMatching: components, repeats: false)
 
